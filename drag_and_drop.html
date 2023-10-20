@@ -45,25 +45,37 @@
     const draggables = document.querySelectorAll('.draggable');
     let active = null;
 
+    function handleStart(event) {
+        active = event.target;
+
+        let rect = active.getBoundingClientRect();
+        let shiftX = event.clientX - rect.left || event.touches[0].clientX - rect.left;
+        let shiftY = event.clientY - rect.top || event.touches[0].clientY - rect.top;
+
+        function handleMove(ev) {
+            ev.preventDefault();
+            active.style.left = (ev.clientX || ev.touches[0].clientX) - shiftX + 'px';
+            active.style.top = (ev.clientY || ev.touches[0].clientY) - shiftY + 'px';
+        }
+
+        function handleEnd() {
+            document.removeEventListener('mousemove', handleMove);
+            document.removeEventListener('touchmove', handleMove);
+            document.removeEventListener('mouseup', handleEnd);
+            document.removeEventListener('touchend', handleEnd);
+            active = null;
+        }
+
+        document.addEventListener('mousemove', handleMove);
+        document.addEventListener('touchmove', handleMove);
+        document.addEventListener('mouseup', handleEnd, { once: true });
+        document.addEventListener('touchend', handleEnd, { once: true });
+    }
+
     draggables.forEach(draggable => {
-        draggable.addEventListener('mousedown', (e) => {
-            active = draggable;
-            let shiftX = e.clientX - draggable.getBoundingClientRect().left;
-            let shiftY = e.clientY - draggable.getBoundingClientRect().top;
-
-            function onMouseMove(event) {
-                active.style.left = event.clientX - shiftX + 'px';
-                active.style.top = event.clientY - shiftY + 'px';
-            }
-
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', () => {
-                document.removeEventListener('mousemove', onMouseMove);
-                active = null;
-            }, { once: true });
-        });
+        draggable.addEventListener('mousedown', handleStart);
+        draggable.addEventListener('touchstart', handleStart);
     });
 </script>
 </body>
 </html>
-
