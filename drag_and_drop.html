@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication Label Drag and Drop</title>
+    <style>
+        .container {
+            width: 600px;
+            height: 200px;
+            position: relative;
+            border: 1px solid #000;
+            margin: 20px 0 150px 20px;
+            padding: 10px;
+            background-color: #f7f7f7;
+        }
+
+        .draggable {
+            width: auto;
+            height: 30px;
+            font-size: 18px;
+            position: absolute;
+            cursor: pointer;
+            padding: 4px 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+</div>
+
+<div id="name" class="draggable" draggable="true" style="top:220px; left:10px;">Patient Name:</div>
+<div id="mrdob" class="draggable" draggable="true" style="top:255px; left:10px;">MR# or DOB:</div>
+<div id="drug" class="draggable" draggable="true" style="top:290px; left:10px;">Drug:</div>
+<div id="conc" class="draggable" draggable="true" style="top:325px; left:10px;">Conc:</div>
+<div id="dose" class="draggable" draggable="true" style="top:360px; left:10px;">Dose:</div>
+<div id="expiration" class="draggable" draggable="true" style="top:395px; left:10px;">Expiration Date/Time:</div>
+<div id="prepared" class="draggable" draggable="true" style="top:430px; left:10px;">Prepared by:</div>
+
+<script>
+    const draggables = document.querySelectorAll('.draggable');
+    let active = null;
+
+    draggables.forEach(draggable => {
+        draggable.addEventListener('mousedown', (e) => {
+            active = draggable;
+            let shiftX = e.clientX - draggable.getBoundingClientRect().left;
+            let shiftY = e.clientY - draggable.getBoundingClientRect().top;
+
+            function onMouseMove(event) {
+                active.style.left = event.clientX - shiftX + 'px';
+                active.style.top = event.clientY - shiftY + 'px';
+            }
+
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                active = null;
+            }, { once: true });
+        });
+    });
+</script>
+</body>
+</html>
+
