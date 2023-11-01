@@ -49,6 +49,10 @@
 <div id="prepared" class="draggable" draggable="true" style="top:220px; left:10px;">Prepared by:</div>
 
 <script>
+    document.body.addEventListener('touchmove', function(event) {
+    event.preventDefault();
+}, { passive: false });
+
     const draggables = document.querySelectorAll('.draggable');
     let active = null;
 
